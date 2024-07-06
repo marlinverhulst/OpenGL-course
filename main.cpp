@@ -4,33 +4,34 @@
 #include <cmath>
 
 float vertices[] = 
-{       /*POSITIONS*/
-    -0.5f, -0.5f, 0.0f, // bottom left
-    0.5f, -0.5f, 0.0f, //  bottom right
-    0.5f, 0.5f, 0.0f, //  up right
+{       /*POSITIONS*/    /*VERTEX COLOR */
+    -0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f,        0.0f, 1.0f, 0.0f,  
+    0.5f, 0.5f, 0.0f,         0.0f, 0.0f, 1.0f,  
 
-    0.5f, 0.5f, 0.0f, //  up right
-    -0.5f, 0.5f, 0.0f, //  up left
-    -0.5f, -0.5f, 0.0f, // bottom left
+    0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f,        0.0f, 1.0f, 0.0f,
+    -0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,
 };
 
 const char* vertexShaderData =
 "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"out vec3 color;"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f);\n"
+"   color = aColor;\n"
 "}\0";
 
 const char* fragmentShaderData =
 "#version 330 core\n"
 "out vec4 fragColor;\n"
-"uniform float xColor;"
-"uniform float yColor;"
-"uniform float zColor;"
+"in vec3 color;\n"
 "void main()\n"
 "{\n"
-"   fragColor = vec4(xColor, yColor, zColor, 1.0f );"
+"   fragColor = vec4(color, 1.0f );"
 "}\0";
 
 
@@ -129,23 +130,19 @@ int main(void)
 
 
     /*Position attribute*/
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    /*Color attribute */
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Update here*/
-        float time = glfwGetTime();
-        float xValue = std::cos(time) / 2.0f + 0.5f; // Clamp it between 0.0f and 1.0f
-        float yValue = std::sin(time) / 2.0f + 0.5f; // Clamp it between 0.0f and 1.0f
-        float zValue = std::cos(time) / 2.0f + 0.5f; // Clamp it between 0.0f and 1.0f
-
-        glUniform1f(glGetUniformLocation(program, "xColor"), xValue);
-        glUniform1f(glGetUniformLocation(program, "yColor"), yValue);
-        glUniform1f(glGetUniformLocation(program, "zColor"), zValue);
-
+      
 
          
         /* Render here */
@@ -154,7 +151,7 @@ int main(void)
 
         /*Draw your stuff here*/
        glUseProgram(program);
-     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
