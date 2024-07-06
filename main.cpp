@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <cmath>
 
 float vertices[] = 
 {       /*POSITIONS*/
@@ -24,9 +25,12 @@ const char* vertexShaderData =
 const char* fragmentShaderData =
 "#version 330 core\n"
 "out vec4 fragColor;\n"
+"uniform float xColor;"
+"uniform float yColor;"
+"uniform float zColor;"
 "void main()\n"
 "{\n"
-"   fragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f );"
+"   fragColor = vec4(xColor, yColor, zColor, 1.0f );"
 "}\0";
 
 
@@ -133,6 +137,15 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Update here*/
+        float time = glfwGetTime();
+        float xValue = std::cos(time) / 2.0f + 0.5f; // Clamp it between 0.0f and 1.0f
+        float yValue = std::sin(time) / 2.0f + 0.5f; // Clamp it between 0.0f and 1.0f
+        float zValue = std::cos(time) / 2.0f + 0.5f; // Clamp it between 0.0f and 1.0f
+
+        glUniform1f(glGetUniformLocation(program, "xColor"), xValue);
+        glUniform1f(glGetUniformLocation(program, "yColor"), yValue);
+        glUniform1f(glGetUniformLocation(program, "zColor"), zValue);
+
 
          
         /* Render here */
@@ -140,8 +153,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         /*Draw your stuff here*/
-        glUseProgram(program);
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+       glUseProgram(program);
+     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
