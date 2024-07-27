@@ -25,6 +25,8 @@ void userInput(GLFWwindow* window);
 void mouseCursorPosition(GLFWwindow* window, double xPos, double yPos);
 void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset);
 
+glm::mat4 model; // represents the model for scaling position etc
+glm::vec3 myPos = glm::vec3(1.0f); // postion vector
 
 int main(void)
 {
@@ -97,7 +99,27 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         /* Update here*/
+        float time = glfwGetTime();
+		float xValue = std::cos(time) / 2.0f + 0.5f; // 0.0f - 1.0f
+		float yValue = std::sin(time) / 2.0f + 0.5f; // 0.0f - 1.0f
+		float zValue = std::cos(time) / 2.0f + 0.5f; // 0.0f - 1.0f
+        
+        glm::vec3 colorVecor = { 1.0f, 0.5f, 0.50f };
+        myShader.setVec3("color", colorVecor);
 
+        /* MATRIX for scaling / rotation etc*/
+
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        //model = glm::rotate(model, glm::radians(45.0f) * time, myPos);
+                
+         
+
+
+        model = glm::translate(model, myPos);
+        myShader.setMat4("model", model);
+
+       
         userInput(window);
         /* Render here */
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
@@ -105,7 +127,7 @@ int main(void)
 
         /*Draw your stuff here*/
        myShader.use();
-       //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -134,6 +156,18 @@ void userInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_TRUE)  
+             myPos.y += 0.0005f;
+            
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_TRUE)  
+             myPos.y -= 0.0005f;
+         
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_TRUE)  
+             myPos.x += 0.0005f;
+            
+    else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_TRUE)  
+             myPos.x -= 0.0005f;
+
 
 }
 void mouseCursorPosition(GLFWwindow* window, double xPos, double yPos)
