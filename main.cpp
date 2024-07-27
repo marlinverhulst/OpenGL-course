@@ -12,15 +12,16 @@
 
 
 float vertices[] = 
-{       /*POSITIONS*/    /*VERTEX COLOR */
-    -0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.0f,        0.0f, 1.0f, 0.0f,  
-    0.5f, 0.5f, 0.0f,         0.0f, 0.0f, 1.0f,  
+{       /*POSITIONS*/    /*VERTEX COLOR */              /*TEXTURE COORDS*/
+    -0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f,         0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f,        0.0f, 1.0f, 0.0f,         1.0f, 0.0f,
+    0.5f, 0.5f, 0.0f,         0.0f, 0.0f, 1.0f,         1.0f, 1.0f,
 
-    0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,
-    -0.5f, 0.5f, 0.0f,        0.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,
+    0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,         1.0f,1.0f,
+    -0.5f, 0.5f, 0.0f,        0.0f, 1.0f, 0.0f,         0.1f, 1.0f,
+    -0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,         0.0f,0.0f,
 };
+
 
 void resizeCallBack(GLFWwindow* window, int width, int height); // declaration (protype)
 void userInput(GLFWwindow* window);
@@ -83,12 +84,16 @@ int main(void)
 
 
     /*Position attribute*/
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     /*Color attribute */
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    /*Texture Coord attribute */
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
 
     /* Shaders */
