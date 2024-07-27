@@ -90,7 +90,7 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT);
 
         /*Draw your stuff here*/
-        myShader.use();
+       myShader.use();
        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
        glDrawArrays(GL_TRIANGLES, 0, 6);
