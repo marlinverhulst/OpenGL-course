@@ -28,6 +28,9 @@ void userInput(GLFWwindow* window);
 void mouseCursorPosition(GLFWwindow* window, double xPos, double yPos);
 void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset);
 
+
+unsigned int loadtexture(const char* texturePath);
+
 glm::mat4 model; // represents the model for scaling position etc
 glm::vec3 myPos = glm::vec3(1.0f); // postion vector
 
@@ -190,4 +193,29 @@ void mouseCursorPosition(GLFWwindow* window, double xPos, double yPos)
 void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset)
 {
     std::cout << "Scrolling: " << xOffset << " " << yOffset << "\n";
+}
+
+unsigned int loadtexture(const char* texturePath)
+{
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    /*set up filters here later*/
+
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
+
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    }
+    else
+    {
+        std::cout << "Failed to load texture !!! \n";
+    }
+    
+
+
+
+
+    return texture;
 }
