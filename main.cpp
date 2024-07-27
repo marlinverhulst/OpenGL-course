@@ -91,7 +91,7 @@ int main(void)
 
         /*Draw your stuff here*/
         myShader.use();
-       // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+       //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
