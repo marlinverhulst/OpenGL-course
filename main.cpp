@@ -111,12 +111,9 @@ int main(void)
 
         model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-        model = glm::rotate(model, glm::radians(45.0f) * time, glm::vec3(0.5f, 0.5f, 0.5f ));
-                
-         
-
-
+       // model = glm::rotate(model, glm::radians(45.0f) * time, glm::vec3(0.5f, 0.5f, 0.5f ));
         model = glm::translate(model, myPos);
+
         myShader.setMat4("model", model);
 
        
@@ -128,6 +125,13 @@ int main(void)
         /*Draw your stuff here*/
        myShader.use();
        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+       glBindVertexArray(VAO);
+       glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+       model = glm::mat4(1.0f);
+       model = glm::translate(model, glm::vec3(0.5f, 0.5f, 0.0f));
+       myShader.setMat4("model", model);
        glBindVertexArray(VAO);
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
