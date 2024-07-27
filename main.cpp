@@ -16,6 +16,8 @@ float vertices[] =
     -0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,
 };
 
+void resizeCallBack(GLFWwindow* window, int width, int height); // declaration (protype)
+void userInput(GLFWwindow* window);
 
 
 int main(void)
@@ -41,6 +43,7 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, resizeCallBack);
 
     if (glewInit() != GLEW_OK) {
         std::cout << "failed to init GLEW\n";
@@ -84,7 +87,7 @@ int main(void)
     {
         /* Update here*/
 
-         
+        userInput(window);
         /* Render here */
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -107,4 +110,18 @@ int main(void)
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
+}
+
+void resizeCallBack(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void userInput(GLFWwindow* window) 
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) 
+    {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+
 }
