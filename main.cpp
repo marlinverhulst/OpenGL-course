@@ -18,6 +18,8 @@ float vertices[] =
 
 void resizeCallBack(GLFWwindow* window, int width, int height); // declaration (protype)
 void userInput(GLFWwindow* window);
+void mouseCursorPosition(GLFWwindow* window, double xPos, double yPos);
+void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset);
 
 
 int main(void)
@@ -43,7 +45,12 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    // setCallbackFunctions
     glfwSetFramebufferSizeCallback(window, resizeCallBack);
+    glfwSetCursorPosCallback(window, mouseCursorPosition);
+    glfwSetScrollCallback(window, mouseScrollPosition);
+    
 
     if (glewInit() != GLEW_OK) {
         std::cout << "failed to init GLEW\n";
@@ -124,4 +131,14 @@ void userInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
+}
+void mouseCursorPosition(GLFWwindow* window, double xPos, double yPos)
+{
+    std::cout << "mouse has been moved: " << xPos << " " << yPos << "\n";
+}
+
+
+void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset)
+{
+    std::cout << "Scrolling: " << xOffset << " " << yOffset << "\n";
 }
