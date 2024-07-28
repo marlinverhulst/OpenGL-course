@@ -9,6 +9,9 @@
 
 #include "src/Shader.h"
 
+#define SCR_WIDTH 1000
+#define SCR_HEIGHT 800
+
 
 
 float vertices[] = 
@@ -32,6 +35,8 @@ void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset);
 unsigned int loadtexture(const char* texturePath);
 
 glm::mat4 model; // represents the model for scaling position etc
+glm::mat4 view; // represent the camera
+glm::mat4 projection;
 glm::vec3 myPos = glm::vec3(0.0f); // postion vector
 
 int main(void)
@@ -47,7 +52,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1200, 800, "OpenGL 3.3", NULL, NULL);
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL 3.3", NULL, NULL);
     if (!window)
     {
         std::cout << "Failed to create window\n";
@@ -130,12 +135,27 @@ int main(void)
 
         /* MATRIX for scaling / rotation etc*/
 
-        model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        //model = glm::mat4(1.0f);
+        //model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
        // model = glm::rotate(model, glm::radians(45.0f) * time, glm::vec3(0.5f, 0.5f, 0.5f ));
-        model = glm::translate(model, myPos);
+        //model = glm::translate(model, myPos);
 
+
+        // COORDINATES 
+
+        projection = glm::perspective(glm::radians(45.0f), float(SCR_WIDTH) / float(SCR_HEIGHT), 0.1f, 100.0f);
+        myShader.setMat4("projection", projection);
+
+        view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        myShader.setMat4("view", view);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, myPos);
         myShader.setMat4("model", model);
+
+
         myShader.setFloat("alpha", xValue);
 
        
@@ -155,16 +175,16 @@ int main(void)
 
        glActiveTexture(GL_TEXTURE1);
 
-        glBindTexture(GL_TEXTURE_2D, facetex);
+       glBindTexture(GL_TEXTURE_2D, facetex);
 
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
-       model = glm::mat4(1.0f);
-       model = glm::translate(model, glm::vec3(0.5f, 0.5f, 0.0f));
-       myShader.setMat4("model", model);
-       glBindVertexArray(VAO);
-       glDrawArrays(GL_TRIANGLES, 0, 6);
+       //model = glm::mat4(1.0f);
+       //model = glm::translate(model, glm::vec3(0.5f, 0.5f, 0.0f));
+       //myShader.setMat4("model", model);
+       //glBindVertexArray(VAO);
+       //glDrawArrays(GL_TRIANGLES, 0, 6);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
