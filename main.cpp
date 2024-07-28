@@ -18,7 +18,7 @@ float vertices[] =
     0.5f, 0.5f, 0.0f,         0.0f, 0.0f, 1.0f,         1.0f, 1.0f,
 
     0.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f,         1.0f,1.0f,
-    -0.5f, 0.5f, 0.0f,        0.0f, 1.0f, 0.0f,         0.1f, 1.0f,
+    -0.5f, 0.5f, 0.0f,        0.0f, 1.0f, 0.0f,         0.0f, 1.0f,
     -0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,         0.0f,0.0f,
 };
 
@@ -32,7 +32,7 @@ void mouseScrollPosition(GLFWwindow* window, double xOffset, double yOffset);
 unsigned int loadtexture(const char* texturePath);
 
 glm::mat4 model; // represents the model for scaling position etc
-glm::vec3 myPos = glm::vec3(1.0f); // postion vector
+glm::vec3 myPos = glm::vec3(0.0f); // postion vector
 
 int main(void)
 {
@@ -99,9 +99,18 @@ int main(void)
     glEnableVertexAttribArray(2);
 
 
+   
+
     /* Shaders */
 
     Shader myShader("res/shaders/vertexShader.glsl", "res/shaders/fragmentShader.glsl");
+  
+    
+    
+    /* Texture */
+    loadtexture("res/textures/awesomeface.png");
+
+   
    
 
 
@@ -136,6 +145,7 @@ int main(void)
        myShader.use();
        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
+       //glBindTexture(GL_TEXTURE_2D, containerTexture);
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
@@ -199,20 +209,38 @@ unsigned int loadtexture(const char* texturePath)
 {
     unsigned int texture;
     glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
     /*set up filters here later*/
 
     int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(texturePath, &width, &height, &nrChannels, 0);
 
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        GLenum channel = GL_RGB;
+        if (nrChannels == 1)
+            channel = GL_RED;
+        if (nrChannels == 3)
+            channel = GL_RGB;
+        if (nrChannels == 4) 
+        {
+            channel = GL_RGBA;
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, channel, width, height, 0, channel, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
     {
         std::cout << "Failed to load texture !!! \n";
     }
     
+    stbi_image_free(data);
 
 
 
