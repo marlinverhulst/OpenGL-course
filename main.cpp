@@ -98,17 +98,19 @@ int main(void)
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-
-   
-
-    /* Shaders */
-
-    Shader myShader("res/shaders/vertexShader.glsl", "res/shaders/fragmentShader.glsl");
-  
     
     
     /* Texture */
-    loadtexture("res/textures/awesomeface.png");
+    unsigned int containertex =  loadtexture("res/textures/container.jpg");
+    unsigned int facetex =  loadtexture("res/textures/awesomeface.png");
+ 
+    
+    /* Shaders */
+
+    Shader myShader("res/shaders/vertexShader.glsl", "res/shaders/fragmentShader.glsl");
+    myShader.use();
+    myShader.setInt("container_texture", 0);
+    myShader.setInt("face_texture", 1);
 
    
    
@@ -134,9 +136,12 @@ int main(void)
         model = glm::translate(model, myPos);
 
         myShader.setMat4("model", model);
+        myShader.setFloat("alpha", xValue);
 
        
         userInput(window);
+        
+        
         /* Render here */
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -145,7 +150,13 @@ int main(void)
        myShader.use();
        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        glBindVertexArray(VAO);
-       //glBindTexture(GL_TEXTURE_2D, containerTexture);
+       glActiveTexture(GL_TEXTURE0);
+       glBindTexture(GL_TEXTURE_2D, containertex);
+
+       glActiveTexture(GL_TEXTURE1);
+
+        glBindTexture(GL_TEXTURE_2D, facetex);
+
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
@@ -211,7 +222,13 @@ unsigned int loadtexture(const char* texturePath)
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    /*set up filters here later*/
+    /*set up filters options*/
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
 
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
